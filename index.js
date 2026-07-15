@@ -29,7 +29,7 @@ const  run = async ()=> {
     const db = client.db("tutor-booking-a9");
     const userCollection = db.collection("users");
 
-    app.get("/arekaka", async(req, res)=>{
+    app.get("/users", async(req, res)=>{
       const cursor = userCollection.find();
       const result = await cursor.toArray();
       res.send(result);
