@@ -29,6 +29,8 @@ const  run = async ()=> {
     const db = client.db("tutor-booking-a9");
     const userCollection = db.collection("users");
 
+
+    //get api
     app.get("/users", async(req, res)=>{
       const cursor = userCollection.find();
       const result = await cursor.toArray();
@@ -46,9 +48,6 @@ const  run = async ()=> {
 }
 run().catch(console.dir);
 
-app.get("/", (req, res)=>{
-  res.send("hello My name is shuvro biswas nayon")
-})
 
 
 app.listen(port, () => {
