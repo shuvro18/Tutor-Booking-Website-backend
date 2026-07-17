@@ -43,10 +43,15 @@ const  run = async ()=> {
       const query ={
         _id : new ObjectId(id)
       }
-      const user = await userCollection.findOne(query);
-
-      console.log(user);      
+      const user = await userCollection.findOne(query);     
       res.send(user)
+    })
+
+    //create a user
+    app.post('/users', async(req, res)=>{
+      const newUser = req.body;
+      const result = await userCollection.insertOne(newUser);
+      res.send(result)
     })
 
     
