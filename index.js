@@ -54,6 +54,12 @@ const  run = async ()=> {
       res.send(result)
     })
 
+    app.get('/my-tutors/:createdBy', async(req, res)=>{
+      const {createdBy} = req.params;
+      const result = await userCollection.find({createdBy:createdBy}).toArray();
+      res.send(result)
+    })
+
     
     await client.db("admin").command({ ping: 1 });
     console.log(
