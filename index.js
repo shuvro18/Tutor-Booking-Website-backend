@@ -1,15 +1,14 @@
-const express = require('express')
-const dotenv = require('dotenv')
+const express = require("express");
+const dotenv = require("dotenv");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-const app = express()
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const app = express();
 
-dotenv.config()
+dotenv.config();
 
 const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
-
 
 //Mongo URI
 const uri = process.env.MONGO_URI;
@@ -20,58 +19,84 @@ const client = new MongoClient(uri, {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
 
-const  run = async ()=> {
+const run = async () => {
   try {
     await client.connect();
     const db = client.db("tutor-booking-a9");
     const userCollection = db.collection("users");
 
-
     //get api
-    app.get("/users", async(req, res)=>{
+    app.get("/users", async (req, res) => {
       const cursor = userCollection.find();
       const result = await cursor.toArray();
       res.send(result);
-    })
+    });
 
     //get single data
-    app.get("/users/:id", async(req, res)=>{
-      const id = req.params.id;
-      const query ={
-        _id : new ObjectId(id)
-      }
-      const user = await userCollection.findOne(query);     
-      res.send(user)
-    })
-
-    //create a user
-    app.post('/users', async(req, res)=>{
-      const newUser = req.body;
-      const result = await userCollection.insertOne(newUser);
-      res.send(result)
-    })
-
-    //get my tutors page 
-    app.get('/my-tutors/:createdBy', async(req, res)=>{
-      const {createdBy} = req.params;
-      const result = await userCollection.find({createdBy:createdBy}).toArray();
-      res.send(result)
-    })
-
-    //delete my tutors
-    app.delete('/users/:id', async(req, res)=>{
+    app.get("/users/:id", async (req, res) => {
       const id = req.params.id;
       const query = {
-        _id: new ObjectId(id)
-      }
-      const result = await userCollection.deleteOne(query)
-      res.send(result);
-    })
+        _id: new ObjectId(id),
+      };
+      const user = await userCollection.findOne(query);
+      res.send(user);
+    });
 
-    
+    //create a user
+    app.post("/users", async (req, res) => {
+      const newUser = req.body;
+      const result = await userCollection.insertOne(newUser);
+      res.send(result);
+    });
+
+    //get my tutors page
+    app.get("/my-tutors/:createdBy", async (req, res) => {
+      const { createdBy } = req.params;
+      const result = await userCollection
+        .find({ createdBy: createdBy })
+        .toArray();
+      res.send(result);
+    });
+
+    //delete my tutors
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = {
+        _id: new ObjectId(id),
+      };
+      const result = await userCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    //update user
+    app.patch("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = {
+        _id: new ObjectId(id),
+      };
+      const modifiedTutor = req.body;
+      const updateTutor = {
+        $set: {
+          tutorName: modifiedTutor.tutorName,
+          photoUrl: modifiedTutor.photoUrl,
+          subject: modifiedTutor.subject,
+          hourlyFee: modifiedTutor.hourlyFee,
+          totalSlot: modifiedTutor.totalSlot,
+          startDate: modifiedTutor.startDate,
+          institution: modifiedTutor.institution,
+          experience: modifiedTutor.experience,
+          location: modifiedTutor.location,
+          teachingMode: modifiedTutor.teachingMode,
+          availableTime: modifiedTutor.availableTime,
+        },
+      };
+      const result = await userCollection.updateOne(filter, updateTutor);
+      res.send(result);
+    });
+
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!",
@@ -79,10 +104,8 @@ const  run = async ()=> {
   } catch (err) {
     console.dir(err);
   }
-}
+};
 run().catch(console.dir);
-
-
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
