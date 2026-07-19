@@ -54,10 +54,21 @@ const  run = async ()=> {
       res.send(result)
     })
 
+    //get my tutors page 
     app.get('/my-tutors/:createdBy', async(req, res)=>{
       const {createdBy} = req.params;
       const result = await userCollection.find({createdBy:createdBy}).toArray();
       res.send(result)
+    })
+
+    //delete my tutors
+    app.delete('/users/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {
+        _id: new ObjectId(id)
+      }
+      const result = await userCollection.deleteOne(query)
+      res.send(result);
     })
 
     
