@@ -108,7 +108,18 @@ const run = async () => {
     //booking get api
     app.get("/booking/:id", async (req, res) => {
       const id = req.params.id;
-      const result = await bookingCollection.find({ userId:id }).toArray();
+      const result = await bookingCollection.find({ userId: id }).toArray();
+      res.send(result);
+    });
+
+    // booking delete api
+    app.delete("/booking/:id", async (req, res) => {
+      const id = req.params.id;  
+      console.log(id)    
+      const query = {
+        _id: new ObjectId(id),
+      };
+      const result = await bookingCollection.deleteOne(query);
       res.send(result);
     });
 
