@@ -98,10 +98,17 @@ const run = async () => {
       res.send(result);
     });
 
-    //booking 
+    //booking post api
     app.post("/booking", async (req, res) => {
       const newUser = req.body;
       const result = await bookingCollection.insertOne(newUser);
+      res.send(result);
+    });
+
+    //booking get api
+    app.get("/booking/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await bookingCollection.find({ userId:id }).toArray();
       res.send(result);
     });
 
