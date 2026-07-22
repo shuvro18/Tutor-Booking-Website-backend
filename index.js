@@ -27,6 +27,7 @@ const run = async () => {
     await client.connect();
     const db = client.db("tutor-booking-a9");
     const userCollection = db.collection("users");
+    const bookingCollection = db.collection("bookings");
 
     //get api
     app.get("/users", async (req, res) => {
@@ -94,6 +95,13 @@ const run = async () => {
         },
       };
       const result = await userCollection.updateOne(filter, updateTutor);
+      res.send(result);
+    });
+
+    //booking 
+    app.post("/booking", async (req, res) => {
+      const newUser = req.body;
+      const result = await bookingCollection.insertOne(newUser);
       res.send(result);
     });
 
